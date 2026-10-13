@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GOM · Mẫu thử</title>
+<meta name="description" content="Mẫu thử tương tác GOM (Mẫu A, B, C): ghi chú chi tiêu nhanh sau thanh toán và cảnh báo hạn mức cho sinh viên. Nhóm 2 RE:SMART, Tư duy thiết kế UEH.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<style>
+/* A1 poster (594 x 841 mm = 2245 x 3179 CSS px at 96 dpi), drawn 1:1 and scaled to the viewport on screen.
+   Palette kept from the group's printed poster: blue gradient wall, white cards with navy outline and pill tabs. */
+:root{
+  --sky:#3b93f2; --royal:#1c3fd0; --deep:#0a1a8c;
+  --navy:#0b0b6b; --indigo:#2b2bd6; --ink:#16163f; --muted:#4f5480;
+  --soft:#eef4ff; --line:#c9d6f5;
+  --leaf:#4f8a3f; --root:#a62631; --core:#f0912f;
+  --cream:#fbe9a8; --mint:#d5e3dd; --rose:#e8d9d9;
+  --teal:#5bb5c8; --lime:#a4c639; --orange:#f0a050;
+  --red:#d1102b; --app-bg:#f1f1f6; --app-ink:#1c1c22; --app-mute:#6c6c78;
+  --kscol:#0f7a8c; --kscbg:#dcf3f6;
+  --font-display:'Baloo 2','Be Vietnam Pro',system-ui,sans-serif;
+  --font-body:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#060d45;color:var(--ink);font-family:var(--font-body);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3,h4,p,ul,ol,dl,dd{margin:0}
+ul,ol{padding-left:1.1em}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #ffd35c;outline-offset:2px}
+
+/* ---------- viewer chrome (screen only) ---------- */
+.bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 16px;background:rgba(6,13,69,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.15)}
+.bar b{font-size:14px;margin-right:auto;letter-spacing:.02em}
+.bar button{border:1.5px solid rgba(255,255,255,.5);background:none;color:#fff;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}
+.bar button.on{background:#fff;color:var(--navy)}
+.bar .go{background:linear-gradient(#fff6d8,#ffd35c);color:var(--navy);border-color:#ffd35c;font-weight:800}
+.viewer{overflow:auto;padding:16px}
+.sizer{margin:0 auto;position:relative}
+.sheet{position:absolute;left:0;top:0;transform-origin:0 0;width:2245px;height:3179px;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky) 0,var(--royal) 30%,var(--deep) 100%);background-color:var(--royal);
+  padding:48px 56px 0;font-size:23px;line-height:1.42}
+
+/* ---------- header ---------- */
+.head{display:grid;grid-template-columns:minmax(0,1fr) 700px 226px;gap:36px;align-items:start;color:#fff;height:240px}
+.eyebrow{display:inline-block;font-size:19px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:5px 18px;border:2px solid rgba(255,255,255,.65);border-radius:999px}
+.logo{display:flex;align-items:flex-end;gap:28px;margin-top:10px}
+.logo h1{font-family:var(--font-display);font-weight:800;font-size:196px;line-height:.78;letter-spacing:-.02em;padding-top:26px}
+.logo p{font-family:var(--font-display);font-weight:700;font-size:44px;line-height:1.08;max-width:15ch;padding-bottom:6px}
+.team{border:2px solid rgba(255,255,255,.45);border-radius:26px;padding:16px 22px;background:rgba(255,255,255,.08)}
+.team .t1{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1.1}
+.team .t2{font-size:20px;font-weight:600;margin-top:2px}
+.team ul{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0 18px;font-size:17px;line-height:1.45;margin-top:8px;opacity:.95}
+.qrcard{background:#fff;border-radius:22px;padding:10px 10px 8px;color:var(--navy);text-align:center;margin-top:-22px}
+.qrcard svg{display:block;width:100%;height:auto}
+.qrcard b{display:block;font-size:16.5px;line-height:1.2;margin-top:6px}
+
+/* ---------- evidence band ---------- */
+.evid{margin-top:16px;height:212px;display:grid;grid-template-columns:330px minmax(0,1fr);gap:26px;align-items:stretch;color:#fff;border:2px solid rgba(255,255,255,.45);border-radius:28px;padding:18px 24px;background:rgba(255,255,255,.1)}
+.src h2{font-size:16px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;margin-bottom:5px}
+.src div{font-size:15.5px;line-height:1.22;margin-bottom:5px}
+.src div b{display:block;font-size:18.5px}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.stat{border-left:2px solid rgba(255,255,255,.35);padding-left:14px;display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:12px;align-content:start}
+.stat .ring{grid-row:1/4;width:58px;height:58px;margin-top:4px}
+.stat .ring circle{fill:none;stroke-width:9}
+.stat b{display:block;font-family:var(--font-display);font-size:52px;line-height:1;font-weight:800}
+.stat span{display:block;font-size:16.5px;line-height:1.28;margin-top:4px}
+.stat i{display:inline-block;font-style:normal;font-size:14.5px;font-weight:700;margin-top:6px;padding:1px 10px;border-radius:999px;background:rgba(255,255,255,.2)}
+.evnote{grid-column:1/-1;font-size:15.5px;opacity:.95;display:flex;gap:26px;flex-wrap:wrap;align-items:center;margin-top:-4px}
+.evnote span{display:inline-flex;align-items:center;gap:8px}
+
+/* ---------- cards ---------- */
+.row{display:grid;gap:52px;margin-top:43px}
+.r1,.r2{grid-template-columns:1040px minmax(0,1fr)}
+.r1{height:650px}.r2{height:630px}
+.r3,.r4{grid-template-columns:1040px minmax(0,1fr)}
+.r3{height:574px}.r4{height:552px}
+.col{display:flex;flex-direction:column;gap:46px;min-height:0}
+.card{position:relative;background:#fff;border:4px solid var(--navy);border-radius:34px;padding:46px 28px 22px;min-height:0}
+.tab{position:absolute;left:20px;top:-33px;display:flex;align-items:center;z-index:2}
+.tab .num{position:relative;z-index:1;width:62px;height:62px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:36px;line-height:1;padding-bottom:3px}
+.tab .label{margin:0 0 0 -16px;padding:4px 32px 2px 30px;border:3px solid var(--navy);border-radius:999px;background:#fff;color:var(--navy);font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1.25;letter-spacing:.01em}
+.tab .label b{color:var(--root);font-weight:800}
+.card h3{font-size:20px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--navy);margin-bottom:4px}
+.fn{font-size:16.5px;line-height:1.35;color:var(--muted)}
+
+/* evidence chips: PV = interview, KS = survey, LT = literature */
+.ev{display:inline-block;margin-left:6px;padding:0 10px;border-radius:999px;background:#e1e6ff;color:var(--indigo);font-size:15px;font-weight:700;line-height:1.6;white-space:nowrap;vertical-align:2px}
+.ev.ks{background:var(--kscbg);color:var(--kscol)}
+.ev.lt{background:#f3e8ff;color:#6a2c9c}
+.ev.na{background:none;border:1.5px dashed #8b90b8;color:#5a5f88;font-weight:600}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff}
+.dot.hol{background:transparent;border:2px dashed #fff}
+
+/* persona */
+.persona{display:grid;grid-template-columns:330px minmax(0,1fr);gap:28px;height:calc(100% - 34px)}
+.pl{display:flex;flex-direction:column;align-items:center;gap:10px}
+.avatar{width:150px;height:150px;border-radius:50%;background:linear-gradient(#cfe4ff,#8fb8f5);display:grid;place-items:end center;overflow:hidden;border:4px solid var(--navy);flex:none}
+.pname{font-family:var(--font-display);font-weight:800;font-size:46px;line-height:1;color:var(--navy)}
+.psub{font-size:18px;font-weight:600;color:var(--muted);margin-top:-4px;text-align:center}
+.idcard{width:100%;background:linear-gradient(160deg,#2331c4,#17208f);color:#fff;border-radius:22px;padding:14px 16px}
+.idcard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:18px;line-height:1.3}
+.idcard dt{font-weight:700;opacity:.85}
+.idcard dd{font-weight:700}
+.idcard .ev{margin:3px 0 0;display:inline-block}
+.pr{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto 1fr;gap:12px 24px;min-width:0;font-size:20.5px;line-height:1.36}
+.pr li{margin-bottom:4px}
+.quote{grid-column:1/-1;align-self:end;background:var(--cream);border-radius:18px;padding:12px 18px;font-size:21px;line-height:1.38;font-weight:600;color:var(--navy)}
+.quote small{display:block;font-weight:600;font-size:15.5px;color:var(--muted);margin-top:2px}
+
+/* empathy */
+.emp{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;height:100%}
+.map{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;border:2.5px dashed #b9a67a;border-radius:22px;overflow:hidden}
+.q{padding:12px 14px;font-size:18.5px;line-height:1.33;min-width:0}
+.q:nth-child(1){border-right:2.5px dashed #b9a67a;border-bottom:2.5px dashed #b9a67a}
+.q:nth-child(2){border-bottom:2.5px dashed #b9a67a}
+.q:nth-child(3){border-right:2.5px dashed #b9a67a}
+.q .chip{display:inline-block;background:var(--cream);color:var(--ink);font-weight:800;font-size:17px;padding:2px 16px;border-radius:999px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.q li{margin-bottom:4px}
+.q .ev{font-size:13.5px;margin-left:4px}
+.q .fn{font-size:14.5px;margin-top:4px}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92px;height:92px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:24px;border:5px solid #fff}
+.pg{display:flex;flex-direction:column;gap:14px}
+.pain,.gain{border-radius:18px;padding:12px 16px;font-size:18.5px;line-height:1.33;flex:1;position:relative}
+.pain{background:var(--mint)}
+.gain{background:var(--rose)}
+.pain h4,.gain h4{font-family:var(--font-display);font-size:28px;line-height:1.1;color:var(--ink);margin-bottom:4px;text-transform:uppercase}
+.pain li,.gain li{margin-bottom:4px}
+.pain .ev,.gain .ev{font-size:13.5px;margin-left:4px}
+.face{position:absolute;right:12px;top:10px;width:40px;height:40px}
+
+/* tree */
+.tree{display:flex;flex-direction:column;gap:8px}
+.tier{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}
+.tl{background:linear-gradient(135deg,#3f55e6,#1f2fb8);color:#fff;font-family:var(--font-display);font-weight:800;font-size:28px;line-height:1;border-radius:999px;padding:10px 8px 8px;text-align:center}
+.tl small{display:block;font-family:var(--font-body);font-weight:600;font-size:13.5px;line-height:1.2;margin-top:2px}
+.nodes{display:grid;gap:10px}
+.n4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.node{border-radius:22px;padding:10px 12px;color:#fff;font-weight:700;font-size:20px;line-height:1.25;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:100px}
+.node.leaf{background:var(--leaf)}
+.node.root{background:var(--root)}
+.node .ev{margin:0;background:rgba(255,255,255,.95);font-size:13.5px;line-height:1.5;white-space:normal}
+.node .ev.ks{color:var(--kscol)}
+.core{background:var(--core);color:var(--ink);border-radius:22px;padding:18px 22px;text-align:center;font-weight:800;font-size:24px;line-height:1.25}
+.core .ev{background:#fff;font-size:14.5px}
+.flow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;color:var(--navy);font-size:16px;font-weight:700}
+.flow div{display:flex;align-items:center;justify-content:center;gap:10px}
+.flow svg{width:26px;height:26px}
+.tree .fn{margin-top:4px}
+
+/* fishbone */
+.fish{display:block;width:100%;height:auto}
+.fishnote{display:flex;gap:24px;flex-wrap:wrap;font-size:16px;color:var(--muted);margin-top:6px}
+.fishnote span{display:inline-flex;align-items:center;gap:8px}
+.fishnote .dot{background:var(--indigo)}
+.fishnote .dot.hol{background:transparent;border-color:#8b90b8}
+
+/* problem statement */
+.psq{font-size:26.5px;line-height:1.34;font-weight:700;color:var(--indigo);text-wrap:pretty;border-left:8px solid var(--core);padding-left:22px}
+.psparts{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 14px 30px;font-size:16px}
+.psparts span{background:var(--soft);border:1.5px solid var(--line);border-radius:999px;padding:2px 14px;color:var(--navy)}
+.psparts b{font-weight:800}
+.hmw{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:17px;line-height:1.27}
+.hmw td{padding:6px 12px;vertical-align:middle;background:var(--soft)}
+.hmw td:first-child{border-radius:14px 0 0 14px;width:48%}
+.hmw td:last-child{border-radius:0 14px 14px 0}
+.hmw .k{font-family:var(--font-display);font-weight:800;color:var(--navy);font-size:22px;margin-right:6px}
+.hmw .arrow{width:34px;text-align:center;color:var(--core);font-weight:800;font-size:26px;background:var(--soft)}
+.hmw .ev{font-size:13.5px}
+
+/* prototype */
+.proto{display:grid;grid-template-columns:426px minmax(0,1fr);gap:24px;height:100%}
+.pbox{position:relative;width:426px;height:872px}
+.pbox .phone{position:absolute;left:0;top:0;transform:scale(1.217);transform-origin:0 0}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0;font-size:17.5px;line-height:1.33}
+.side h3{font-size:16.5px}
+.abt{display:grid;gap:8px}
+.abt button{border:2.5px solid var(--line);background:#fff;border-radius:16px;padding:7px 12px;text-align:left;font-size:16px;line-height:1.25;color:var(--navy)}
+.abt button b{display:block;font-size:17px}
+.abt button.on{border-color:var(--navy);background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--navy)}
+.steps{padding-left:1.15em}
+.steps li{margin-bottom:3px}
+.sim{border:2.5px solid var(--navy);background:linear-gradient(#fff6d8,#ffd35c);color:var(--navy);font-weight:800;font-size:17px;border-radius:999px;padding:10px 14px;width:100%}
+.sim2{display:flex;gap:8px}
+.sim2 button{flex:1;border:2px solid var(--line);background:#fff;color:var(--navy);font-weight:700;font-size:14.5px;border-radius:999px;padding:6px 8px}
+.feat{display:grid;gap:6px}
+.feat button{display:block;text-align:left;background:var(--soft);border:2px solid var(--line);border-radius:14px;padding:6px 10px;font-size:15px;line-height:1.3;color:var(--ink)}
+.feat button:hover{border-color:var(--indigo);background:#fff}
+.feat b{font-size:16px;color:var(--navy)}
+.feat .ev{font-size:12.5px;margin-left:4px;vertical-align:1px}
+.printnote{display:none}
+.pnote{font-size:17px;line-height:1.3;color:var(--navy);font-weight:600;margin-bottom:10px}
+.shots{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.shot{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:var(--ink)}
+.shot img{height:286px;width:auto;display:block;border-radius:26px;filter:drop-shadow(0 6px 10px rgba(5,10,80,.25))}
+.shot:hover img{outline:4px solid #ffd35c;outline-offset:2px}
+.shot .cap{font-size:14.5px;line-height:1.22}
+.shot .cap b{display:block;font-size:15px;color:var(--navy)}
+.shot .ev{font-size:12.5px;margin:2px 2px 0}
+.ptools{display:flex;gap:10px;margin:12px 0 8px}
+.ptools .sim{flex:1;width:auto}
+.sim3{border:2.5px solid var(--navy);background:#fff;color:var(--navy);font-weight:800;font-size:17px;border-radius:999px;padding:10px 18px}
+
+/* test */
+.tstate{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:15.5px;line-height:1.3}
+.pill{display:inline-block;background:#fff4d6;border:2px solid #f0c75a;color:#7a5200;font-weight:800;font-size:16px;padding:2px 14px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:#e3f4df;border-color:#7cbf6e;color:#2c6a20}
+table.tt{border-collapse:collapse;width:100%;font-size:15.5px;line-height:1.28}
+.tt th,.tt td{border:1.5px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.tt th{background:var(--soft);color:var(--navy);font-weight:800;font-size:15.5px}
+.tt td:first-child{font-weight:800;color:var(--navy);white-space:nowrap}
+.tt button{border:0;background:none;color:var(--indigo);font-weight:800;text-decoration:underline;padding:0;font-size:inherit}
+.tmeta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:15px;line-height:1.3}
+.tmeta div{background:var(--soft);border-radius:14px;padding:8px 12px}
+.tmeta b{color:var(--navy)}
+
+/* value proposition canvas */
+.vpc{display:grid;grid-template-columns:minmax(0,1fr) 46px minmax(0,1fr);gap:8px 0;align-items:stretch}
+.vh{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:20.5px;line-height:1.1;color:var(--navy)}
+.vh svg{width:34px;height:34px;flex:none}
+.vb{padding:9px 14px 9px;font-size:17.5px;line-height:1.3;min-width:0}
+.vb h4{font-size:16px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;margin-bottom:3px}
+.vb ul{padding-left:1.05em}.vb li{margin-bottom:2px}
+.vb .ev{font-size:12.5px;margin-left:4px;vertical-align:1px}
+.vb.vm{border-radius:10px}
+.vb.cp{border-radius:44px;padding-left:24px;padding-right:20px}
+.vb.g{background:#e3f2df}.vb.g h4{color:#2c6a20}
+.vb.p{background:#fbe3e1}.vb.p h4{color:#9d2a22}
+.vb.j{background:var(--soft)}.vb.j h4{color:var(--navy)}
+.fit{display:grid;place-items:center;color:var(--core)}
+.fit svg{width:34px;height:34px}
+.vfoot{grid-column:1/-1;font-size:15.5px;color:var(--navy);font-weight:600;margin-top:2px}
+
+/* test results */
+.tgrid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:22px;margin-top:4px}
+.tgrid h3{font-size:15px;margin-bottom:6px;line-height:1.25}
+.lk{display:grid;grid-template-columns:168px minmax(0,1fr) 50px;gap:6px 10px;align-items:center;font-size:15.5px}
+.lk .nm{font-weight:700;color:var(--ink);line-height:1.15}
+.lk .mean{font-family:var(--font-display);font-weight:800;font-size:23px;color:var(--navy);text-align:right;line-height:1}
+.sbar{display:flex;height:30px;gap:2px}
+.sbar i{display:grid;place-items:center;font-style:normal;font-size:14px;font-weight:800;color:var(--navy);min-width:0}
+.sbar i:first-child{border-radius:6px 0 0 6px}.sbar i:last-child{border-radius:0 6px 6px 0}
+.sbar i.dk{color:#fff}
+.lkleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13.5px;color:var(--muted);margin-top:6px;align-items:center}
+.lkleg span{display:inline-flex;align-items:center;gap:5px}
+.lkleg b{display:inline-block;width:14px;height:14px;border-radius:3px}
+.thr{display:inline-block;margin-top:8px;background:#e3f4df;border:2px solid #7cbf6e;color:#2c6a20;font-weight:800;font-size:14.5px;padding:2px 12px;border-radius:999px}
+.mini{display:flex;flex-direction:column;gap:12px}
+.mini .sbar{height:34px}
+.mini .sbar i{font-size:13.5px;line-height:1.05;text-align:center;padding:0 2px}
+.mini .cap2{font-size:14.5px;color:var(--navy);font-weight:700;margin-top:3px}
+.sleg{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:13.5px;color:var(--ink);margin-top:5px}
+.sleg span{display:inline-flex;align-items:center;gap:5px}
+.sleg b{display:inline-block;width:13px;height:13px;border-radius:3px}
+.fbt{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:14.5px;line-height:1.24;margin-top:8px}
+.fbt td{background:var(--soft);padding:5px 10px;vertical-align:middle}
+.fbt td:first-child{border-radius:12px 0 0 12px;width:50%}
+.fbt td:last-child{border-radius:0 12px 12px 0}
+.fbt td.ar{width:26px;padding:0;text-align:center;color:var(--core);font-weight:800;font-size:20px}
+.fbt .k{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.fbt th{font-size:13.5px;text-align:left;color:var(--navy);padding:0 10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.foot{position:absolute;left:56px;right:56px;bottom:16px;color:#fff;font-size:15px;line-height:1.35;opacity:.95;display:flex;justify-content:space-between;gap:24px}
+
+/* ---------- phone app (native 350 x 716; scaled inside the poster) ---------- */
+.phone{width:350px;height:716px;background:#0e0e12;border-radius:46px;padding:10px;box-shadow:0 14px 34px rgba(5,10,80,.45)}
+.screen{position:relative;width:100%;height:100%;background:var(--app-bg);border-radius:36px;overflow:hidden;color:var(--app-ink);font-size:13px;line-height:1.4;display:flex;flex-direction:column;font-family:var(--font-body)}
+.island{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:96px;height:24px;border-radius:14px;background:#0e0e12;z-index:12}
+.status{display:flex;justify-content:space-between;padding:10px 24px 0;font-weight:700;font-size:12px;height:36px;flex:none;position:relative;z-index:11}
+.view{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 16px 16px;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid #e1e1ea;padding:6px 4px 12px}
+.tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;color:#8a8a96;padding:4px 0}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button.on{color:var(--red)}
+.a-head{display:flex;align-items:center;justify-content:space-between;margin:6px 0 10px}
+.a-title{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.round{width:34px;height:34px;border-radius:50%;border:2px solid var(--app-ink);background:none;display:grid;place-items:center}
+.round svg{width:18px;height:18px}
+.acard{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px}
+.donut{display:grid;place-items:center;position:relative;height:196px}
+.donut svg{width:196px;height:196px;transform:rotate(-90deg)}
+.donut .mid{position:absolute;text-align:center}
+.donut .mid small{display:block;font-size:12.5px;color:#3a3a46}
+.donut .mid b{display:block;font-size:20px;font-weight:800;margin-top:2px}
+.donut .mid span{font-size:11px;color:var(--app-mute)}
+.today{padding:16px 14px 14px;text-align:center}
+.today small{display:block;font-size:12.5px;color:#3a3a46;font-weight:600}
+.today b{display:block;font-size:34px;font-weight:800;color:var(--red);line-height:1.15;margin:4px 0 2px}
+.today span{display:block;font-size:11.5px;color:var(--app-mute)}
+.today .pbar{margin-top:12px}
+.short{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.short button{border:0;background:var(--red);color:#fff;border-radius:12px;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:600;line-height:1.15;text-align:center}
+.short svg{width:24px;height:24px}
+.lh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.lh b{font-size:14px}
+.lh span{font-size:11.5px;color:var(--app-mute)}
+.trow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #eee}
+.trow:first-of-type{border-top:0}
+.ico{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.ico svg{width:19px;height:19px}
+.trow .t{flex:1;min-width:0}
+.trow .t b{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .t small{color:var(--app-mute);font-size:11px}
+.trow .a{font-weight:700;font-size:13px;white-space:nowrap}
+.alertstrip{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:#fff;border:2px solid var(--red);border-radius:16px;padding:10px 12px;margin-bottom:12px;font-size:12px;font-weight:600}
+.alertstrip svg{flex:none;width:22px;height:22px;color:var(--red)}
+.banner{position:absolute;left:10px;right:10px;top:40px;z-index:20;border:0;text-align:left;border-radius:16px;padding:10px 12px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(0,0,0,.28);display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.35;animation:drop .35s ease-out}
+.banner.alert{background:#fff;border:2px solid var(--red)}
+.banner .ic{flex:none;width:30px;height:30px;border-radius:9px;background:var(--red);color:#fff;display:grid;place-items:center}
+.banner .ic svg{width:18px;height:18px}
+.banner b{display:block;font-size:12px}
+.banner small{display:block;color:var(--app-mute);font-size:10.5px}
+@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.banner{animation:none}.scanline{animation:none!important}}
+.scrim{position:absolute;inset:0;background:rgba(10,10,20,.52);z-index:14}
+.sheetp{position:absolute;left:8px;right:8px;bottom:8px;z-index:15;background:#fff;border-radius:24px;padding:14px;box-shadow:0 -6px 30px rgba(0,0,0,.25)}
+.sheetp .top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;letter-spacing:.03em;margin-bottom:8px}
+.sheetp .x{width:28px;height:28px;border-radius:50%;border:0;background:#ececf2;display:grid;place-items:center}
+.sheetp .x svg{width:14px;height:14px}
+.sheetp .mer{font-weight:700;font-size:15px}
+.sheetp .amt{font-size:22px;font-weight:800;margin:2px 0}
+.sheetp .src{font-size:11px;color:var(--app-mute);margin-bottom:10px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat{position:relative;border:1.5px solid #e2e2ea;background:#fff;border-radius:12px;padding:10px 8px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:12.5px;min-height:46px;text-align:center}
+.cat svg{width:18px;height:18px;flex:none}
+.cat.on{background:#a9703b;border-color:#a9703b;color:#fff}
+.cat .sg{position:absolute;top:-8px;right:8px;background:var(--navy);color:#fff;font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:999px}
+.note-in{width:100%;margin-top:10px;border:1.5px solid #e2e2ea;border-radius:12px;padding:11px 12px;font:inherit;font-size:12.5px;background:#fff;color:var(--app-ink)}
+.btn-k{width:100%;margin-top:10px;border:0;border-radius:14px;background:#111;color:#fff;font-weight:700;font-size:14px;padding:13px}
+.btn-r{border:0;border-radius:14px;background:var(--red);color:#fff;font-weight:700;font-size:14px;padding:12px 18px}
+.btn-r[disabled],.btn-k[disabled]{opacity:.45;cursor:not-allowed}
+.sbtns{display:flex;gap:8px;margin-top:10px}.sbtns .btn-k{margin-top:0;flex:1.6}
+.btn-l{flex:1;border:1.5px solid #c9ccd6;border-radius:14px;background:#fff;color:var(--app-ink);font-weight:700;font-size:14px;padding:12px}
+button.trow{width:100%;border:0;border-top:1px solid #eee;background:#fff7e0;text-align:left;font:inherit;color:inherit;border-radius:10px;padding:8px 6px}
+.toast{position:absolute;left:50%;bottom:78px;transform:translateX(-50%);z-index:30;background:#111;color:#fff;border-radius:999px;padding:8px 16px;font-size:12px;font-weight:600;max-width:90%;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.qrstage{position:relative;height:340px;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#6b4a2f,#2d2016 70%)}
+.qrstage .plac{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:150px;background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.qrstage .plac b{display:block;font-size:11px;margin-top:6px;letter-spacing:.04em}
+.qrstage .corner{position:absolute;width:42px;height:42px;border:5px solid #ff3355;filter:drop-shadow(0 0 6px #ff3355)}
+.c1{left:36px;top:46px;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.c2{right:36px;top:46px;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
+.c3{left:36px;bottom:46px;border-right:0;border-top:0;border-radius:0 0 0 14px}
+.c4{right:36px;bottom:46px;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.scanline{position:absolute;left:40px;right:40px;height:3px;background:#ff3355;box-shadow:0 0 12px #ff3355;animation:scan 2.2s ease-in-out infinite alternate}
+@keyframes scan{from{top:56px}to{top:calc(100% - 59px)}}
+.hint{text-align:center;color:#444;font-size:12px;margin:12px 0}
+.seg{display:flex;border-bottom:1px solid #d6d6de;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:8px 0;font-weight:600;font-size:13px;color:#777;border-bottom:3px solid transparent}
+.seg button.on{color:var(--app-ink);border-color:var(--red);font-weight:800}
+.seg button[disabled]{opacity:.45;cursor:not-allowed}
+.pie{display:flex;align-items:center;gap:14px}
+.pie svg{width:132px;height:132px;flex:none;transform:rotate(-90deg)}
+.leg{flex:1;min-width:0;font-size:12px}
+.leg div{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.leg i{width:10px;height:10px;border-radius:3px;flex:none}
+.leg span{margin-left:auto;font-weight:700}
+.warn{background:#fff;border:2px solid var(--red);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.warn .wh{display:flex;gap:8px;align-items:center;font-weight:800;font-size:13px}
+.warn svg{width:22px;height:22px;color:var(--red);flex:none}
+.pbar{height:8px;border-radius:999px;background:#e6e6ee;overflow:hidden;margin:8px 0 4px}
+.pbar i{display:block;height:100%;background:#9a9aa8;border-radius:999px}
+.pbar i.hot{background:var(--red)}
+.plabel{display:flex;justify-content:space-between;font-size:11.5px;color:var(--app-mute)}
+.lim{margin-bottom:10px;font-size:12.5px}
+.lim .lt{display:flex;justify-content:space-between;font-weight:600}
+.field{width:100%;border:2px solid var(--red);border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--app-ink);margin-bottom:12px}
+.chips-a{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.chips-a::-webkit-scrollbar{display:none}
+.chips-a button{flex:none;width:76px;border:1.5px solid transparent;background:#e5e5ec;border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:600}
+.chips-a button svg{width:22px;height:22px}
+.chips-a button.on{border-color:var(--red);color:var(--red);background:#fff}
+.sl{position:relative;padding-top:34px}
+.sl .bub{position:absolute;top:0;transform:translateX(-50%);background:var(--red);color:#fff;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;white-space:nowrap}
+.sl input{width:100%;accent-color:var(--red)}
+.sl .rng{display:flex;justify-content:space-between;font-size:11px;color:var(--app-mute)}
+.goalc .gt{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.empty{text-align:center;color:var(--app-mute);padding:26px 10px}
+.xu{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;float:right;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.xu svg{width:16px;height:16px}
+.h2a{font-size:16px;font-weight:800;margin:14px 0 8px;clear:both}
+.chal{background:#fff;border:2px solid var(--red);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.chal .ct{font-size:15px;font-weight:800}
+.chal .tipx{margin-top:8px;padding-top:8px;border-top:1px solid #eee;font-size:11.5px;color:#444}
+.gifts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gift{background:#fff;border-radius:16px;padding:12px 8px;text-align:center;font-size:12px;font-weight:600}
+.gift .gi{width:46px;height:46px;border-radius:14px;background:#f1e4d6;margin:0 auto 6px;display:grid;place-items:center;color:#7a4a22}
+.gift .gi svg{width:26px;height:26px}
+.gift small{display:block;color:var(--app-mute);margin:4px 0 8px}
+.gift button{border:0;background:var(--red);color:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:11.5px}
+.gift button[disabled]{background:#c4c4cc;cursor:not-allowed}
+.taskbar{position:absolute;left:0;right:0;top:-2px;z-index:3}
+/* ---------- Mẫu C: giao diện ngân hàng (hư cấu, mô phỏng) ---------- */
+.bk{position:absolute;inset:0;background:#eef1f4;display:flex;flex-direction:column;padding:46px 16px 16px;color:#16202a}
+.bk .bh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.bk .bh button{width:34px;height:34px;border-radius:50%;border:0;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.bk .bh button svg{width:18px;height:18px}
+.bk .bh b{font-size:16px}
+.blogo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px;letter-spacing:.06em;color:#0f5c6e}
+.blogo i{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#0f5c6e,#22a3a3);display:inline-block;position:relative}
+.blogo i:after{content:'';position:absolute;left:6px;top:6px;width:10px;height:10px;border-radius:50%;background:#eef1f4}
+.bcard{background:#fff;border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.bcard small{display:block;font-size:11px;color:#6b7684}
+.bcard b{display:block;font-size:14px;margin-top:2px}
+.bamt{font-size:26px;font-weight:800;letter-spacing:-.01em}
+.bbtn{margin-top:auto;border:0;border-radius:14px;background:#0f5c6e;color:#fff;font-weight:800;font-size:15px;padding:14px}
+.bbtn[disabled]{opacity:.6}
+.bok{text-align:left;padding-top:4px}
+.bok .ck{width:52px;height:52px;border-radius:50%;background:#1f9d6b;color:#fff;display:grid;place-items:center;margin-bottom:10px}
+.bok .ck svg{width:30px;height:30px}
+.bok h3{font-size:15px;font-weight:700;color:#1f9d6b;margin-bottom:4px}
+.bok .big{font-size:30px;font-weight:800;letter-spacing:-.01em}
+.bok .tm{font-size:12px;color:#6b7684;margin-bottom:14px}
+.bok .row2{font-size:11.5px;color:#6b7684;margin-top:8px}.bok .row2 b{display:block;color:#16202a;font-size:14px}
+.bfoot{display:flex;gap:8px;margin-top:auto}.bfoot button{flex:1;border:0;border-radius:14px;padding:12px;font-weight:800;font-size:13px}
+.bfoot .g1{background:#fff;color:#0f5c6e;border:1.5px solid #0f5c6e}.bfoot .g2{background:#0f5c6e;color:#fff}
+.bmock{font-size:10px;color:#8a94a0;text-align:center;margin-top:8px}
+.coin{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe58a,#e8b021 70%);color:#a66f00;font-weight:800;font-size:13px;display:grid;place-items:center;box-shadow:0 2px 4px rgba(0,0,0,.15);animation:coin 2.4s ease-in-out infinite alternate;z-index:1}
+@keyframes coin{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.coin{animation:none}}
+.gomtag{display:inline-flex;align-items:center;gap:6px}
+.gomtag i{font-style:normal;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.04em}
+.sdone{text-align:center;padding:6px 4px 2px}
+.sdone .ck{width:46px;height:46px;border-radius:50%;background:#1f9d6b;color:#fff;display:grid;place-items:center;margin:0 auto 8px}
+.sdone .ck svg{width:26px;height:26px}
+.sdone b{display:block;font-size:15px}
+.sdone .hotline{margin-top:10px;border:2px solid var(--red);border-radius:14px;padding:10px;font-size:12.5px;font-weight:700;color:var(--red);display:flex;gap:8px;align-items:center;text-align:left}
+.sdone .hotline svg{width:22px;height:22px;flex:none}
+
+
+/* ---------- full-screen prototype ---------- */
+.fs{position:fixed;inset:0;z-index:100;background:rgba(6,13,69,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 16px;overflow:auto}
+.fs.open{display:flex}
+.fs .fsbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px;max-width:640px}
+.fs .fsbar button{border:1.5px solid rgba(255,255,255,.55);background:none;color:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
+.fs .fsbar button.on{background:#fff;color:var(--navy)}
+.fs .fsbar .go{background:linear-gradient(#fff6d8,#ffd35c);color:var(--navy);border-color:#ffd35c}
+.fs .fstask{color:#fff;font-size:14px;max-width:560px;text-align:center;margin-bottom:8px}
+.fsbox{position:relative;flex:none}
+.fsbox .phone{position:absolute;left:0;top:0;transform-origin:0 0}
+
+
+body{background:radial-gradient(1200px 700px at 50% -10%,#2b5fe0 0%,#0a1a8c 45%,#060d45 100%) fixed;min-height:100vh}
+.fs{position:static;display:flex;background:none;min-height:100vh;padding:14px 16px 18px}
+.apph{color:#fff;text-align:center;margin:2px 0 10px}
+.apph h1{font-family:var(--font-head,'Baloo 2'),sans-serif;font-size:26px;line-height:1.1;margin:0;letter-spacing:.01em}
+.apph h1 span{color:#ffd35c}
+.apph p{margin:3px 0 0;font-size:13px;opacity:.82}
+.fs .fstask{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:8px 14px;line-height:1.45}
+.fs .fstask b{color:#ffd35c}
+.appf{color:rgba(255,255,255,.6);font-size:11.5px;text-align:center;margin-top:12px}
+@media (max-width:520px){.apph h1{font-size:22px}.apph p{font-size:12px}.fs .fsbar button{padding:6px 11px;font-size:12.5px}.fs .fstask{font-size:12.5px;padding:6px 10px}.appf{display:none}}
+</style>
+</head><body>
+<main class="fs open" id="fs" aria-label="Mẫu thử tương tác GOM">
+  <header class="apph"><h1>GOM <span>· Mẫu thử tương tác</span></h1><p>Nhóm 2 RE:SMART · Tư duy thiết kế · UEH</p></header>
+  <div class="fsbar" role="toolbar" aria-label="Chọn mẫu thử">
+    <button type="button" data-ab="A" class="on" aria-pressed="true">Mẫu A</button>
+    <button type="button" data-ab="B" aria-pressed="false">Mẫu B</button>
+    <button type="button" data-ab="C" aria-pressed="false">Mẫu C · ngân hàng</button>
+    <button type="button" class="go" id="fsSim">Ngân hàng trừ 55.000đ</button>
+    <button type="button" id="fsReset">Đặt lại</button>
+  </div>
+  <div class="fstask" id="fsTask" aria-live="polite"></div>
+  <div class="fsbox" id="fsbox">
+    <div class="phone" id="phone" aria-label="Mẫu thử ứng dụng GOM">
+      <div class="screen" id="screen">
+        <div class="island"></div>
+        <div class="status"><span>14:35</span><span>5G</span></div>
+        <div id="banner"></div>
+        <div class="view" id="view"></div>
+        <nav class="tabbar" id="tabbar" aria-label="Điều hướng ứng dụng"></nav>
+        <div id="overlay"></div>
+        <div id="toast"></div>
+      </div>
+    </div>
+  </div>
+  <div class="appf">GOM · ghi chú chi tiêu nhanh, cảnh báo hạn mức 85% cho sinh viên</div>
+</main>
+<script>
+(function(){
+'use strict';
+/* ---------- icons ---------- */
+var P={
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+ qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v1"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+ chart:'<path d="M5 20V11M11 20V4M17 20v-6M3 20h18"/>',
+ bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
+ coffee:'<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9zM17 10h2a2 2 0 0 1 0 4h-2M8 3v3M12 3v3"/>',
+ food:'<path d="M6 3v7a2 2 0 0 0 2 2v9M10 3v7a2 2 0 0 1-2 2M17 3c-2 2-3 5-3 8h3v10"/>',
+ bag:'<path d="M5 8h14l-1 12H6L5 8zM9 8a3 3 0 0 1 6 0"/>',
+ car:'<path d="M4 16v-4l2-5h12l2 5v4M4 16h16M4 16v2M20 16v2M7.5 13h.01M16.5 13h.01"/>',
+ home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',
+ wallet:'<path d="M3 7h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7zM3 7l2-3h12M16 14h2"/>',
+ laptop:'<rect x="5" y="5" width="14" height="10" rx="1"/><path d="M2 19h20"/>',
+ ticket:'<path d="M3 8a2 2 0 0 0 0 4 2 2 0 0 0 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 1 0-4V6H3v2zM10 6v12"/>',
+ bottle:'<path d="M10 2h4v3l1 2v13a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V7l1-2V2z"/>',
+ bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4l2-2zM10 21h4"/>',
+ warn:'<path d="M12 3L2 20h20L12 3zM12 10v5M12 17.5v.5"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ check:'<path d="M5 12l5 5 9-10"/>',
+ up:'<path d="M12 19V5M5 12l7-7 7 7"/>',
+ back:'<path d="M15 5l-7 7 7 7"/>',
+ star:'<path d="M12 2.5l2.9 6.2 6.6.8-4.9 4.6 1.3 6.7L12 17.5l-5.9 3.3 1.3-6.7L2.5 9.5l6.6-.8L12 2.5z"/>'
+};
+function ic(n,sw){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(sw||2)+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>';}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function vnd(n){return Math.round(n).toLocaleString('vi-VN')+'đ';}
+function evh(e){ // 'KS 16/23' | 'PV 4/8' | 'LT ...' | '' (inferred)
+  if(!e)return '<span class="ev na">nhóm suy luận</span>';
+  return e.split(' · ').map(function(x){var k=x.slice(0,2);return '<span class="ev'+(k==='KS'?' ks':k==='LT'?' lt':'')+'">'+esc(x)+'</span>';}).join('');
+}
+
+/* ---------- prototype ---------- */
+var CATS={
+ cafe:{n:'Cà phê/Đồ uống',ic:'coffee',col:'#a9703b',tip:'tự pha hoặc dùng ưu đãi sinh viên'},
+ food:{n:'Ăn uống',ic:'food',col:'#d1102b',tip:'tự nấu ăn hoặc tìm các ưu đãi sinh viên'},
+ shop:{n:'Mua sắm',ic:'bag',col:'#1f2a9a',tip:'xem lại các khoản chưa thật cần'},
+ move:{n:'Di chuyển',ic:'car',col:'#8d95a8',tip:'gom chuyến đi hoặc đi chung với bạn'},
+ other:{n:'Khác',ic:'wallet',col:'#c9ccd6',tip:''},
+ none:{n:'Chưa phân loại',ic:'wallet',col:'#8d95a8',tip:''}
+};
+var ORDER=['food','cafe','shop','move','other','none'];
+var BUDGET=3000000, DAYS_LEFT=9; /* 22/09 -> 30/09, tính cả hôm nay (khớp ngày trên ảnh giao diện) */
+function initial(){return {
+  screen:'home',budget:BUDGET,variant:(window.__ab||'A'),
+  spent:{food:795500,cafe:289000,shop:299000,move:163700,other:102800,none:0},
+  limits:{food:1000000,cafe:400000,shop:600000,move:500000,other:null,none:null},
+  tx:[{t:'Cơm trưa',c:'food',a:-27500,w:'Ăn uống · 11:52 22/09'},{t:'Áo thun',c:'shop',a:-199000,w:'Mua sắm · 21/09'},{t:'Xe ôm công nghệ',c:'move',a:-34200,w:'Di chuyển · 21/09'},{t:'Trà sữa',c:'cafe',a:-31500,w:'Cà phê/Đồ uống · 20/09'},{t:'Photo giáo trình',c:'other',a:-46800,w:'Khác · 19/09'}],
+  sheet:null,pick:'cafe',banner:null,toast:'',
+  goals:[],goalCat:'tech',goalName:'Tiết kiệm mua laptop mới',goalCap:15000000,
+  chal:5,chalDone:false,xu:1250,redeemed:{},scanning:false,bstep:'form',sheetDone:null
+};}
+var S=initial(),tt=null;
+var $view=document.getElementById('view'),$tab=document.getElementById('tabbar'),$ban=document.getElementById('banner'),$ov=document.getElementById('overlay'),$toast=document.getElementById('toast');
+function total(){return ORDER.reduce(function(a,k){return a+S.spent[k];},0);}
+function pct(n,d){return Math.round(n/d*100);}
+function hot(){return ORDER.filter(function(k){return S.limits[k]&&S.spent[k]/S.limits[k]>=0.85;});}
+function perDay(){return Math.max(0,S.budget-total())/DAYS_LEFT;}
+
+function donut(){
+  var p=total()/S.budget,r=78,C=2*Math.PI*r;
+  return '<div class="donut"><svg viewBox="0 0 196 196" role="img" aria-label="Đã chi '+pct(total(),S.budget)+'% ngân sách tháng"><circle cx="98" cy="98" r="'+r+'" fill="none" stroke="#cfd2dc" stroke-width="24"/><circle cx="98" cy="98" r="'+r+'" fill="none" stroke="#d1102b" stroke-width="24" stroke-dasharray="'+(C*Math.min(p,1)).toFixed(1)+' '+C.toFixed(1)+'"/></svg><div class="mid"><small>Đã chi: '+pct(total(),S.budget)+'%</small><b>'+vnd(total())+'</b><span>trên '+vnd(S.budget)+'</span></div></div>';
+}
+function todayCard(){
+  var left=Math.max(0,S.budget-total()),d=perDay(),p=pct(total(),S.budget);
+  return '<div class="today"><small>Hôm nay bạn còn tiêu được</small><b>'+vnd(d)+'</b><span>Còn '+vnd(left)+' cho '+DAYS_LEFT+' ngày đến hết tháng 9</span><div class="pbar"><i class="hot" style="width:'+Math.min(p,100)+'%"></i></div><div class="plabel"><span>Đã chi '+p+'% tháng</span><span>'+vnd(S.budget)+'</span></div></div>';
+}
+function txRows(){return S.tx.slice(0,5).map(function(x){var c=CATS[x.c];
+  var inner='<span class="ico" style="background:'+(x.c==='other'||x.c==='none'?'#8d95a8':c.col)+'">'+ic(c.ic)+'</span><div class="t"><b>'+esc(x.t)+'</b><small>'+esc(x.w)+'</small></div><span class="a">-'+vnd(Math.abs(x.a))+'</span>';
+  return x.pend?'<button type="button" class="trow pend" data-act="sortpend">'+inner+'</button>':'<div class="trow">'+inner+'</div>';}).join('');}
+
+var V={};
+V.home=function(){
+  var h=hot(),al='';
+  if(h.length){var k=h[0];al='<button type="button" class="alertstrip" data-act="go" data-v="stats">'+ic('warn')+'<span>Nhóm '+esc(CATS[k].n)+' đã dùng '+pct(S.spent[k],S.limits[k])+'% hạn mức tháng này. Chạm để xem.</span></button>';}
+  return '<div class="a-head"><div class="a-title">GOM</div><button type="button" class="round" data-act="go" data-v="acct" aria-label="Tài khoản">'+ic('user')+'</button></div>'+
+   '<div class="acard" style="padding:'+(S.variant==='B'?'0':'14px')+'">'+(S.variant==='B'?todayCard():donut())+'</div>'+al+
+   '<div class="short"><button type="button" data-act="go" data-v="qr">'+ic('qr')+'Quét QR</button><button type="button" data-act="go" data-v="goal">'+ic('target')+'Tạo Mục Tiêu</button><button type="button" data-act="go" data-v="stats">'+ic('chart')+'Thống kê</button><button type="button" data-act="tip">'+ic('bulb')+'Mẹo</button></div>'+
+   '<div class="acard"><div class="lh"><b>Giao dịch gần đây</b><span>tháng 9</span></div>'+txRows()+'</div>';
+};
+V.qr=function(){
+  var cells='',seed=7,N=21;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
+  function fz(x,y){return (x<7&&y<7)?[x,y]:(x>13&&y<7)?[x-14,y]:(x<7&&y>13)?[x,y-14]:null;}
+  for(var y=0;y<N;y++)for(var x=0;x<N;x++){var f=fz(x,y),dark;
+    if(f){dark=(f[0]===0||f[0]===6||f[1]===0||f[1]===6)||(f[0]>=2&&f[0]<=4&&f[1]>=2&&f[1]<=4);}
+    else if((x===7||y===7||x===13||y===13)&&(x<8||y<8)&&!(x>7&&y>7)){dark=false;}
+    else dark=rnd()>0.52;
+    if(dark)cells+='<rect x="'+x*6+'" y="'+y*6+'" width="6" height="6" fill="#111"/>';}
+  return '<div class="a-head"><div class="a-title">Quét hóa đơn / QR</div><button type="button" class="round" data-act="go" data-v="home" aria-label="Quay lại">'+ic('x')+'</button></div>'+
+   '<div class="qrstage"><div class="plac"><svg viewBox="0 0 126 126" width="100%" aria-hidden="true">'+cells+'</svg><b>MAKE ROOM CAFE</b></div><span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span><span class="scanline"></span></div>'+
+   '<p class="hint">Căn chỉnh hóa đơn hoặc mã QR vào khung</p><div style="text-align:center"><button type="button" class="btn-r" data-act="scan"'+(S.scanning?' disabled':'')+'>'+(S.scanning?'Đang đọc…':'Quét thử')+'</button></div>';
+};
+V.stats=function(){
+  var r=46,C=2*Math.PI*r,off=0,seg='',leg='',tot=total();
+  ORDER.forEach(function(k){if(!S.spent[k])return;var f=S.spent[k]/tot,l=C*f;seg+='<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="'+CATS[k].col+'" stroke-width="22" stroke-dasharray="'+l.toFixed(1)+' '+(C-l).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'"/>';off+=l;leg+='<div><i style="background:'+CATS[k].col+'"></i>'+esc(CATS[k].n)+'<span>'+pct(S.spent[k],tot)+'%</span></div>';});
+  var h=hot(),w='';
+  if(h.length){h.forEach(function(k){var p=pct(S.spent[k],S.limits[k]);w+='<div class="warn"><div class="wh">'+ic('warn')+'Bạn đã chi '+p+'% hạn mức '+esc(CATS[k].n)+' của tháng này.</div><div class="pbar"><i class="hot" style="width:'+Math.min(p,100)+'%"></i></div><div class="plabel"><span>'+p+'%</span><span>Hạn mức: '+vnd(S.limits[k])+'</span></div><div style="margin-top:6px;font-size:12px">Mẹo: bạn có thể giảm chi phí '+esc(CATS[k].n)+' bằng cách '+esc(CATS[k].tip)+'.</div></div>';});}
+  else w='<div class="warn" style="border-color:#c4c4cc"><div class="wh" style="color:#444">'+ic('check')+'<span style="color:#444">Chưa có nhóm nào chạm 85% hạn mức.</span></div></div>';
+  var lim='';ORDER.forEach(function(k){if(!S.limits[k])return;var p=pct(S.spent[k],S.limits[k]);lim+='<div class="lim"><div class="lt"><span>'+esc(CATS[k].n)+'</span><span>'+p+'%</span></div><div class="pbar"><i class="'+(p>=85?'hot':'')+'" style="width:'+Math.min(p,100)+'%"></i></div><div class="plabel"><span>'+vnd(S.spent[k])+'</span><span>/ '+vnd(S.limits[k])+'</span></div></div>';});
+  return '<div class="a-head"><div class="a-title">Thống kê chi tiêu</div></div><div class="seg"><button type="button" disabled title="Chưa có trong bản mẫu">Tuần này</button><button type="button" class="on">Tháng này</button><button type="button" disabled title="Chưa có trong bản mẫu">Năm nay</button></div>'+
+   '<div class="acard"><div class="pie"><svg viewBox="0 0 120 120" role="img" aria-label="Tỉ trọng chi tiêu theo nhóm">'+seg+'</svg><div class="leg">'+leg+'</div></div></div>'+w+'<div class="acard"><div class="lh"><b>Hạn mức theo nhóm</b><span>tháng này</span></div>'+lim+'</div>';
+};
+var GCATS=[['food','Ăn uống','food'],['shop','Mua sắm','bag'],['tech','Đồ công nghệ','laptop'],['rent','Tiền nhà','home'],['other','Khác','wallet']];
+function gcat(k){return GCATS.filter(function(g){return g[0]===k;})[0];}
+V.goal=function(){
+  var chips=GCATS.map(function(g){return '<button type="button" class="'+(S.goalCat===g[0]?'on':'')+'" data-act="gcat" data-v="'+g[0]+'">'+ic(g[2])+g[1]+'</button>';}).join('');
+  var max=(S.goalCat==='food'||S.goalCat==='shop')?3000000:20000000,left=(Math.min(S.goalCap,max)/max*100);
+  return '<div class="a-head"><div class="a-title">Tạo mục tiêu mới</div><button type="button" class="round" data-act="go" data-v="home" aria-label="Quay lại">'+ic('x')+'</button></div>'+
+   '<label for="gname" style="font-weight:700;font-size:12px">Tên mục tiêu</label><input id="gname" class="field" value="'+esc(S.goalName)+'" maxlength="40">'+
+   '<div style="font-weight:700;font-size:12px">Danh mục</div><div class="chips-a">'+chips+'</div>'+
+   '<div class="acard"><div style="font-weight:800;margin-bottom:2px">'+((S.goalCat==='food'||S.goalCat==='shop')?'Hạn mức tháng này':'Số tiền mục tiêu')+'</div><div class="sl"><span class="bub" id="gbub" style="left:'+left+'%">'+vnd(Math.min(S.goalCap,max))+'</span><input id="gcap" type="range" min="0" max="'+max+'" step="'+(max>5000000?500000:50000)+'" value="'+Math.min(S.goalCap,max)+'" aria-label="Hạn mức"><div class="rng"><span>0đ</span><span>'+vnd(max)+'</span></div></div></div>'+
+   '<button type="button" class="btn-k" data-act="mkgoal">Tạo mục tiêu</button>'+
+   '<p style="font-size:11px;color:#6c6c78;margin-top:8px">Chọn Ăn uống hoặc Mua sắm để đặt hạn mức tháng cho nhóm chi đó.</p>';
+};
+V.goals=function(){
+  var body=S.goals.length?S.goals.map(function(g,i){var c=gcat(g.c),lim=(g.c==='food'||g.c==='shop');
+    if(lim){var sp=S.spent[g.c],p=pct(sp,g.cap);return '<div class="acard goalc"><div class="gt"><span style="display:flex;gap:8px;align-items:center"><span class="ico" style="background:#d1102b">'+ic(c[2])+'</span>'+esc(g.n)+'</span><span>'+vnd(g.cap)+'</span></div><div class="pbar"><i class="'+(p>=85?'hot':'')+'" style="width:'+Math.min(p,100)+'%"></i></div><div class="plabel"><span>Đã chi '+vnd(sp)+'</span><span>'+p+'% hạn mức</span></div></div>';}
+    var p2=pct(g.saved,g.cap);return '<div class="acard goalc"><div class="gt"><span style="display:flex;gap:8px;align-items:center"><span class="ico" style="background:#d1102b">'+ic(c[2])+'</span>'+esc(g.n)+'</span><span>'+vnd(g.cap)+'</span></div><div class="pbar"><i class="hot" style="width:'+p2+'%"></i></div><div class="plabel"><span>Đã để dành '+vnd(g.saved)+'</span><span>'+p2+'%</span></div><button type="button" class="btn-r" style="margin-top:10px;padding:8px 14px;font-size:12.5px" data-act="gadd" data-v="'+i+'">Để dành thêm 200.000đ</button></div>';}).join(''):'<div class="empty">Chưa có mục tiêu nào.<br>Tạo mục tiêu đầu tiên để GOM theo dõi giúp bạn.</div>';
+  return '<div class="a-head"><div class="a-title">Mục tiêu</div></div>'+body+'<div style="text-align:center;margin-top:6px"><button type="button" class="btn-r" data-act="go" data-v="goal">Tạo mục tiêu mới</button></div>';
+};
+var GIFTS=[{n:'Voucher đồ uống 20.000đ',xu:200,ic:'ticket'},{n:'Bình nước giữ nhiệt',xu:500,ic:'bottle'}];
+V.acct=function(){
+  var p=pct(S.chal,7);
+  var g=GIFTS.map(function(x,i){var done=S.redeemed[i],low=S.xu<x.xu;return '<div class="gift"><div class="gi">'+ic(x.ic)+'</div>'+esc(x.n)+'<small>'+x.xu+' Xu</small><button type="button" data-act="redeem" data-v="'+i+'"'+((done||low)?' disabled':'')+'>'+(done?'Đã đổi':(low?'Chưa đủ Xu':'Đổi quà'))+'</button></div>';}).join('');
+  return '<div class="a-head"><div class="a-title" style="font-size:19px">Thử thách &amp; Quà tặng</div></div><span class="xu">'+ic('star',2)+' '+S.xu.toLocaleString('vi-VN')+' Xu</span>'+
+   '<div class="h2a">Nhiệm vụ tích Xu</div><div class="chal"><div class="ct">7 ngày tự nấu ăn tại nhà</div><div class="pbar"><i class="hot" style="width:'+p+'%"></i></div><div class="plabel"><span>'+p+'%</span><span>'+S.chal+'/7 ngày</span></div><button type="button" class="btn-r" style="margin-top:10px;padding:8px 14px;font-size:12.5px" data-act="chal"'+(S.chalDone?' disabled':'')+'>'+(S.chalDone?'Đã hoàn thành +50 Xu':'Điểm danh hôm nay')+'</button><div class="tipx">Giảm chi phí Ăn uống và nhận 50 Xu.</div></div>'+
+   '<div class="h2a">Đổi quà ưu đãi</div><div class="gifts">'+g+'</div>';
+};
+
+/* Mẫu C: ứng dụng ngân hàng hư cấu; GOM hiện bảng ghi chú ngay sau khi chuyển khoản thành công */
+V.bank=function(){
+  var head='<div class="bh"><button type="button" data-act="bnew" aria-label="Quay lại">'+ic('back')+'</button><span class="blogo"><i></i>NGÂN HÀNG MẪU</span><span style="width:34px"></span></div>';
+  if(S.bstep!=='done'){
+    var busy=S.bstep==='busy';
+    return '<div class="bk">'+head+'<b style="font-size:18px;margin-bottom:10px">Chuyển tiền</b>'+
+     '<div class="bcard"><small>Từ tài khoản</small><b>NGUYEN THUY LINH</b></div>'+
+     '<div class="bcard"><small>Đến</small><b>MAKE ROOM CAFE</b></div>'+
+     '<div class="bcard"><small>Số tiền</small><div class="bamt">55.000 VND</div><small style="margin-top:6px">Nội dung: ca phe</small></div>'+
+     '<button type="button" class="bbtn" data-act="bpay"'+(busy?' disabled':'')+'>'+(busy?'Đang xử lý…':'Chuyển tiền')+'</button><div class="bmock">Giao diện ngân hàng mô phỏng</div></div>';
+  }
+  var coins=[[286,112,'đ'],[250,196,'đ'],[296,262,'đ']].map(function(c,i){return '<span class="coin" style="left:'+c[0]+'px;top:'+c[1]+'px;animation-delay:'+(i*.4)+'s" aria-hidden="true">'+c[2]+'</span>';}).join('');
+  return '<div class="bk">'+coins+head+'<div class="bok" style="position:relative;z-index:2"><div class="ck">'+ic('check',3)+'</div><h3>Chuyển khoản thành công</h3><div class="big">-55.000 VND</div><div class="tm">13:23 · 22/09/2026</div>'+
+   '<div class="bcard"><div class="row2" style="margin-top:0">Đến<b>MAKE ROOM CAFE</b></div><div class="row2">Từ tài khoản<b>NGUYEN THUY LINH</b></div></div></div>'+
+   '<div class="bfoot"><button type="button" class="g1" data-act="bnew">Giao dịch mới</button><button type="button" class="g2" data-act="gomopen">Mở GOM</button></div><div class="bmock">Giao diện ngân hàng mô phỏng</div></div>';
+};
+var TABS=[['home','Trang chủ','home'],['goals','Mục tiêu','target'],['stats','Thống kê','chart'],['acct','Tài khoản','user']];
+function renderTab(){
+  $tab.style.display=S.screen==='bank'?'none':'';
+  var cur=S.screen==='qr'?'home':(S.screen==='goal'?'goals':S.screen);
+  $tab.innerHTML=TABS.map(function(t){return '<button type="button" data-act="go" data-v="'+t[0]+'" class="'+(cur===t[0]?'on':'')+'"'+(cur===t[0]?' aria-current="page"':'')+'>'+ic(t[2])+t[1]+'</button>';}).join('');
+}
+function renderBanner(){
+  var b=S.banner;
+  if(!b){$ban.innerHTML='';return;}
+  if(b.k==='bank')$ban.innerHTML='<button type="button" class="banner" data-act="openbank"><span class="ic">'+ic('bell')+'</span><span><b>GOM · bây giờ</b>Ngân hàng vừa trừ 55.000đ tại MAKE ROOM CAFE. Chạm để ghi nhanh.<small>Thông báo mô phỏng</small></span></button>';
+  else $ban.innerHTML='<button type="button" class="banner alert" data-act="alertgo"><span class="ic">'+ic('warn')+'</span><span><b>GOM · cảnh báo hạn mức</b>'+esc(b.msg)+'</span></button>';
+}
+function renderOverlay(){
+  if(!S.sheet){$ov.innerHTML='';return;}
+  if(S.sheet==='bankc'&&S.sheetDone){var d=S.sheetDone;
+    $ov.innerHTML='<div class="scrim"></div><div class="sheetp" role="dialog" aria-label="Đã lưu khoản chi"><div class="top"><span class="gomtag"><i>GOM</i>GHI CHÚ CHI TIÊU NHANH</span><button type="button" class="x" data-act="bclose" aria-label="Đóng">'+ic('x',2.6)+'</button></div>'+
+     '<div class="sdone"><div class="ck">'+ic('check',3)+'</div><b>Đã lưu 55.000đ vào '+esc(CATS[d.k].n)+'</b>'+(d.p!==null?'<div class="plabel" style="justify-content:center;gap:6px;margin-top:4px"><span>Đã dùng '+d.p+'% hạn mức '+esc(CATS[d.k].n)+' tháng này</span></div>':'')+
+     (d.hot?'<div class="hotline">'+ic('warn')+'<span>Bạn vừa chi 55.000đ cho '+esc(CATS[d.k].n)+'. Bạn đã dùng '+d.p+'% hạn mức tháng này!</span></div>':'')+'</div>'+
+     '<div class="sbtns"><button type="button" class="btn-l" data-act="bclose">Đóng</button><button type="button" class="btn-k" data-act="gomopen">Mở GOM</button></div></div>';
+    return;}
+  var cats=['cafe','food','shop','move'].map(function(k){return '<button type="button" class="cat'+(S.pick===k?' on':'')+'" data-act="pick" data-v="'+k+'" aria-pressed="'+(S.pick===k)+'">'+ic(CATS[k].ic)+esc(CATS[k].n)+(k==='cafe'?'<span class="sg">Gợi ý</span>':'')+'</button>';}).join('');
+  $ov.innerHTML='<div class="scrim" data-act="close"></div><div class="sheetp" role="dialog" aria-label="Ghi chú chi tiêu nhanh"><div class="top"><span class="gomtag">'+(S.sheet==='bankc'?'<i>GOM</i>':'')+'GHI CHÚ CHI TIÊU NHANH</span><button type="button" class="x" data-act="close" aria-label="Đóng">'+ic('x',2.6)+'</button></div><div class="mer">MAKE ROOM CAFE</div><div class="amt">55.000đ</div><div class="src">'+(S.sheet==='qr'?'Từ quét mã QR · 13:23 22/09':S.sheet==='pend'?'Khoản chưa phân loại · 13:23 22/09':S.sheet==='bankc'?'Vừa chuyển khoản thành công · 13:23 22/09':'Biến động số dư · 13:23 22/09')+' · mô phỏng</div><div class="cats">'+cats+'</div><input class="note-in" id="note" placeholder="Thêm ghi chú (tùy chọn)…" aria-label="Ghi chú" maxlength="60"><div class="sbtns">'+(S.sheet==='pend'?'':'<button type="button" class="btn-l" data-act="later">Để sau</button>')+'<button type="button" class="btn-k" data-act="save">Lưu nhanh</button></div></div>';
+}
+function render(keepScroll){
+  var y=keepScroll?$view.scrollTop:0;
+  $view.innerHTML=V[S.screen]();
+  $view.scrollTop=y;
+  renderTab();renderBanner();renderOverlay();
+  $toast.innerHTML=S.toast?'<div class="toast" role="status">'+esc(S.toast)+'</div>':'';
+}
+function say(m){S.toast=m;clearTimeout(tt);tt=setTimeout(function(){S.toast='';$toast.innerHTML='';},2600);}
+function save(){
+  var k=S.pick,note=(document.getElementById('note')||{}).value||'';
+  if(S.sheet==='pend'){S.spent.none=Math.max(0,S.spent.none-55000);S.tx=S.tx.filter(function(x){return !x.pend;});}
+  S.spent[k]+=55000;
+  S.tx.unshift({t:'MAKE ROOM CAFE',c:k,a:-55000,w:CATS[k].n+(note?' · '+note:'')+' · 13:23 22/09'});
+  if(S.sheet==='bankc'){var l2=S.limits[k];S.sheetDone={k:k,p:l2?pct(S.spent[k],l2):null,hot:!!(l2&&S.spent[k]/l2>=0.85)};render(true);return;}
+  S.sheet=null;S.screen='home';S.banner=null;
+  var lim=S.limits[k];
+  if(lim&&S.spent[k]/lim>=0.85){S.banner={k:'alert',msg:'Bạn vừa chi 55.000đ cho '+CATS[k].n+'. Bạn đã dùng '+pct(S.spent[k],lim)+'% hạn mức tháng này!'};}
+  say('Đã lưu 55.000đ vào '+CATS[k].n);
+  render();
+}
+function act(a,v){
+  if(a==='go'){S.screen=v;S.banner=S.banner&&S.banner.k==='alert'?null:S.banner;render();}
+  else if(a==='tip'){say('Mẹo: ghi khoản chi ngay khi vừa trả để không bỏ sót khoản nhỏ.');render(true);}
+  else if(a==='scan'){S.scanning=true;render(true);setTimeout(function(){S.scanning=false;S.sheet='qr';S.pick='cafe';render(true);},800);}
+  else if(a==='openbank'){S.banner=null;S.sheet='bank';S.pick='cafe';render(true);}
+  else if(a==='alertgo'){S.banner=null;S.screen='stats';render();}
+  else if(a==='pick'){S.pick=v;renderOverlay();}
+  else if(a==='close'){S.sheet=null;renderOverlay();}
+  else if(a==='save'){save();}
+  else if(a==='later'){var fromBank=S.sheet==='bankc';S.spent.none+=55000;S.tx.unshift({t:'MAKE ROOM CAFE',c:'none',a:-55000,w:'Chưa phân loại · chạm để phân loại',pend:true});S.sheet=null;if(!fromBank){S.screen='home';}S.banner=null;say(fromBank?'GOM đã để 55.000đ vào mục Chưa phân loại':'Đã để 55.000đ vào mục Chưa phân loại');render(fromBank);}
+  else if(a==='bpay'){S.bstep='busy';render(true);setTimeout(function(){S.bstep='done';render(true);setTimeout(function(){if(S.screen==='bank'&&S.bstep==='done'&&!S.sheet&&!S.bankShown){S.bankShown=true;S.sheet='bankc';S.pick='cafe';S.sheetDone=null;render(true);}},900);},700);}
+  else if(a==='bnew'){S.bstep='form';S.sheet=null;S.sheetDone=null;S.bankShown=false;render();}
+  else if(a==='bclose'){S.sheet=null;S.sheetDone=null;render(true);}
+  else if(a==='gomopen'){S.sheet=null;S.sheetDone=null;S.screen='home';render();}
+  else if(a==='sortpend'){S.sheet='pend';S.pick='cafe';render(true);}
+  else if(a==='gcat'){
+    var DEF={food:'Hạn mức tiền ăn tháng này',shop:'Hạn mức mua sắm tháng này',tech:'Tiết kiệm mua laptop mới',rent:'Để dành tiền nhà',other:'Mục tiêu tiết kiệm'};
+    var isDef=Object.keys(DEF).some(function(k){return DEF[k]===S.goalName;});
+    S.goalCat=v;if(isDef)S.goalName=DEF[v];
+    if((v==='food'||v==='shop')&&S.goalCap>3000000)S.goalCap=1000000;
+    if(!(v==='food'||v==='shop')&&S.goalCap<500000)S.goalCap=15000000;
+    render(true);}
+  else if(a==='mkgoal'){
+    var n=(S.goalName||'').trim()||'Mục tiêu mới',lim=(S.goalCat==='food'||S.goalCat==='shop');
+    var cap=Math.max(S.goalCap,lim?50000:500000);
+    S.goals.unshift({n:n,c:S.goalCat,cap:cap,saved:0});
+    if(lim){S.limits[S.goalCat]=cap;}
+    S.screen='goals';say(lim?'Đã đặt hạn mức '+CATS[S.goalCat].n+': '+vnd(cap):'Đã tạo mục tiêu “'+n+'”');render();
+  }
+  else if(a==='gadd'){var g=S.goals[+v];g.saved=Math.min(g.cap,g.saved+200000);render(true);}
+  else if(a==='chal'){S.chal=Math.min(7,S.chal+1);if(S.chal===7){S.chalDone=true;S.xu+=50;say('Hoàn thành thử thách, +50 Xu');}render(true);}
+  else if(a==='redeem'){var x=GIFTS[+v];if(S.xu>=x.xu&&!S.redeemed[v]){S.xu-=x.xu;S.redeemed[v]=true;say('Đã đổi “'+x.n+'”');}render(true);}
+}
+var $screen=document.getElementById('screen');
+$screen.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b||b.hasAttribute('disabled'))return;
+  act(b.getAttribute('data-act'),b.getAttribute('data-v'));
+});
+$screen.addEventListener('input',function(e){
+  if(e.target.id==='gname'){S.goalName=e.target.value;}
+  else if(e.target.id==='gcap'){S.goalCap=+e.target.value;var b=document.getElementById('gbub'),mx=+e.target.max;b.textContent=vnd(S.goalCap);b.style.left=(S.goalCap/mx*100)+'%';}
+});
+
+
+/* A/B variant */
+function setAB(v){
+  window.__ab=v;S.variant=v;
+  document.querySelectorAll('[data-ab]').forEach(function(b){var on=b.getAttribute('data-ab')===v;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
+  if(v==='C'){S.screen='bank';S.bstep='form';S.sheet=null;S.sheetDone=null;S.bankShown=false;}
+  else if(S.screen!=='home'){S.screen='home';}
+  render();
+}
+document.querySelectorAll('[data-ab]').forEach(function(b){b.addEventListener('click',function(){setAB(b.getAttribute('data-ab'));});});
+
+/* six AI-generated interface images + Mẫu C on the poster: each opens the live prototype at that screen */
+function showTask(){}
+var task=null;
+
+/* ---------- full-screen prototype ---------- */
+
+
+
+var HINT={
+ A:'<b>Mẫu A</b> · trang chủ hiện % ngân sách đã chi. Bấm <b>Ngân hàng trừ 55.000đ</b> → chạm thông báo → chọn danh mục → <b>Lưu</b>.',
+ B:'<b>Mẫu B</b> · trang chủ hiện số tiền hôm nay còn tiêu được. Bấm <b>Ngân hàng trừ 55.000đ</b> → chạm thông báo → chọn danh mục → <b>Lưu</b>.',
+ C:'<b>Mẫu C</b> · trong app ngân hàng, bấm <b>Chuyển tiền</b>; bảng ghi chú nhanh của GOM bật lên ngay sau khi chuyển thành công.'
+};
+function hint(){document.getElementById('fsTask').innerHTML=HINT[S.variant||'A'];}
+var _setAB=setAB;setAB=function(v){window.__ab=v;S=initial();S.variant=v;if(v!=='C'){S.banner={k:'bank'};}_setAB(v);hint();};
+document.querySelectorAll('[data-ab]').forEach(function(b){b.addEventListener('click',hint);});
+function openFs(){fitFs();}
+function bank(){if(S.variant==='C'){window.__ab='A';S=initial();_setAB('A');}S.sheet=null;S.sheetDone=null;S.screen='home';S.banner={k:'bank'};render();hint();}
+function reset(){var v=S.variant;S=initial();S.variant=v;if(v==='C'){S.screen='bank';}render();hint();}
+function fitFs(){
+  var avail=window.innerHeight-(document.getElementById('fsbox').getBoundingClientRect().top+window.scrollY)-20,
+      w=window.innerWidth-32,s=Math.min(1.25,avail/716,w/350);s=Math.max(s,.62);
+  $fsbox.style.width=(350*s)+'px';$fsbox.style.height=(716*s)+'px';$phone.style.transform='scale('+s+')';
+}
+var $phone=document.getElementById('phone'),$fsbox=document.getElementById('fsbox');
+document.getElementById('fsSim').addEventListener('click',bank);
+document.getElementById('fsReset').addEventListener('click',reset);
+window.addEventListener('resize',fitFs);
+S.banner={k:'bank'};render();hint();fitFs();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitFs);
+
+})();
+</script>
+</body></html>
